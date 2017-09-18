@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSA_CLI_Utility", "RSAcli\RSA_CLI_Utility.csproj", "{03FB4F6E-3807-4CF7-8054-39CBAF2B8AA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHelpers", "..\EasySharp\NHelpers\NHelpers.csproj", "{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DES_CLI_Utility", "..\DES_Encoder_NET4.6.1\DES_Encoder_CLI\DES_CLI_Utility.csproj", "{4EF17CAC-77D8-4999-A8C6-2BEAAF71FC9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DESEncodeDecodeLib", "..\DES_Encoder_NET4.6.1\DESEncodeDecodeLib\DESEncodeDecodeLib.csproj", "{6CCA1BB2-3A1B-4D7C-B644-68FC12BA65B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSAEncDecLib", "RSAEncDecLib\RSAEncDecLib.csproj", "{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSAEncDecLibTests", "RSAEncDecLibTests\RSAEncDecLibTests.csproj", "{2034CD2A-34BC-4F1F-A82A-37D720C032D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03FB4F6E-3807-4CF7-8054-39CBAF2B8AA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03FB4F6E-3807-4CF7-8054-39CBAF2B8AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03FB4F6E-3807-4CF7-8054-39CBAF2B8AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03FB4F6E-3807-4CF7-8054-39CBAF2B8AA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EF17CAC-77D8-4999-A8C6-2BEAAF71FC9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EF17CAC-77D8-4999-A8C6-2BEAAF71FC9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EF17CAC-77D8-4999-A8C6-2BEAAF71FC9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EF17CAC-77D8-4999-A8C6-2BEAAF71FC9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CCA1BB2-3A1B-4D7C-B644-68FC12BA65B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CCA1BB2-3A1B-4D7C-B644-68FC12BA65B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CCA1BB2-3A1B-4D7C-B644-68FC12BA65B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CCA1BB2-3A1B-4D7C-B644-68FC12BA65B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2034CD2A-34BC-4F1F-A82A-37D720C032D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2034CD2A-34BC-4F1F-A82A-37D720C032D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2034CD2A-34BC-4F1F-A82A-37D720C032D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2034CD2A-34BC-4F1F-A82A-37D720C032D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F192C69D-55A6-4189-A66E-AEC0D2E03F67}
+	EndGlobalSection
+EndGlobal
