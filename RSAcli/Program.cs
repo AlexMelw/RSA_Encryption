@@ -4,6 +4,7 @@
     using System.Globalization;
     using System.Numerics;
     using System.Text;
+    using RSAEncDecLib.AlgorithmHelpers;
 
     class Program
     {
@@ -33,6 +34,9 @@
             //byte[] decryptedRsaParams = rsaEngine.DecryptData(encryptedRsaParams);
             byte[] decryptedRsaParams = rsaEngine.DecryptData(encryptedRsaParams);
             Console.Out.WriteLine("decryptedRsaParams = {0}", new BigInteger(decryptedRsaParams));
+
+
+            Demo();
         }
 
         private static void LcmGcdDemo()
@@ -72,7 +76,7 @@
 
 
             // data
-            BigInteger bi_data = BigInteger.Parse("12345678901234567890");
+            BigInteger bi_data = BigInteger.Parse("123456789");
 
             // encrypt and decrypt data
             BigInteger bi_encrypted = BigInteger.ModPow(bi_data, bi_e, bi_n);
