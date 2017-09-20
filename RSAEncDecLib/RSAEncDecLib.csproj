@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmHelpers\BigIntegerHelper.cs" />
     <Compile Include="AlgorithmHelpers\HCSRAlgorithm.cs" />
     <Compile Include="AlgorithmHelpers\IntegerHelper.cs" />
     <Compile Include="AlgorithmHelpers\MaurerAlgorithm.cs" />

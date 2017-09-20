@@ -1,7 +1,11 @@
 ﻿namespace RSAcli
 {
     using System;
+    using System.Net;
     using System.Numerics;
+    using EasySharp.NHelpers.Utils.Cryptography;
+    using Maurer;
+    using RSAEncDecLib.AlgorithmHelpers;
 
     public class RSAEngine
     {
@@ -17,11 +21,52 @@
             _keySize = keySize;
         }
 
+        public RSAEngine() { }
+
         #endregion
 
-        public static void GenerateKyes(out byte[] privateKey, out byte[] publicKey)
+        public static void GenerateKyes(int keySizeBits, out BigInteger n, out BigInteger e, out BigInteger d)
         {
-            throw new NotImplementedException();
+            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
+            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
+
+            //BigInteger p = 2;
+            //BigInteger q = 7;
+
+            n = ComputeModulus(p, q);
+
+            BigInteger totient = ComputeTotient(p, q);
+            e = GenerateEncryptionExponent(n, totient);
+            d = GenerateDecryptionExponent(e, totient);
+        }
+
+        private static BigInteger GenerateEncryptionExponent(BigInteger modulus, BigInteger totient)
+        {
+            BigInteger e;
+            do
+            {
+                e = BigIntegerHelper.NextBigInteger(2, totient);
+            } while (BigInteger.GreatestCommonDivisor(e, totient) != 1);
+
+            return e;
+        }
+
+        private static BigInteger GenerateDecryptionExponent(BigInteger encryptionExp, BigInteger totient)
+        {
+            int k = 2;
+            BigInteger d = BigInteger.Multiply(k, totient) - 1;
+
+            return d;
+        }
+
+        private static BigInteger ComputeTotient(BigInteger p, BigInteger q)
+        {
+            return (p - 1) * (q - 1);
+        }
+
+        private static BigInteger ComputeModulus(BigInteger p, BigInteger q)
+        {
+            return BigInteger.Multiply(p, q);
         }
 
         public static void GenerateKyes(out BigInteger privateKey, out BigInteger publicKey)
