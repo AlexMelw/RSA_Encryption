@@ -7,7 +7,7 @@ namespace Maurer
 
     class HCSRAlgorithm
     {
-        private Random _randomNumberGenerator;
+        private readonly Random _randomNumberGenerator;
 
         public HCSRAlgorithm(int seed)
         {

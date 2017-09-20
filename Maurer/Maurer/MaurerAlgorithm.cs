@@ -4,19 +4,39 @@ using System.Numerics;
 
 namespace Maurer
 {
-    class Algorithm
+    using System.IO;
+    using EasySharp.NHelpers.Utils.Cryptography;
+
+    class MaurerAlgorithm
     {
+        private Random _randomNumberGenerator;
+        private int _seed;
+
+        private MaurerAlgorithm(int seed)
+        {
+            _seed = seed;
+            _randomNumberGenerator = new Random(seed);
+        }
+
+        public static MaurerAlgorithm Instance
+        {
+            get {
+                int seed = RNGUtil.GenerateRandomInt();
+                return new MaurerAlgorithm(seed);
+            }
+        }
+
         public double Log2(BigInteger n)
         {
             return BigInteger.Log10(n) / Math.Log10(2);
         }
 
-        public BigInteger ProvablePrime(int k, int seed)
+        public BigInteger ProvablePrime(int k)
         {
             BigInteger N = 0;
             List<long> primes = null;
-            HCSRAlgorithm hc = new HCSRAlgorithm(seed);
-            Random random = new Random(seed);
+            HCSRAlgorithm hc = new HCSRAlgorithm(_seed);
+            //Random random = new Random(seed);
 
             if (k <= 20)
             {
@@ -27,9 +47,9 @@ namespace Maurer
                     long n = 1 << (k - 1);
 
                     for (int i = 0; i < k - 1; i++)
-                        n |= (long)random.Next(2) << i;
+                        n |= (long) _randomNumberGenerator.Next(2) << i;
 
-                    long bound = (long)Math.Sqrt(n);
+                    long bound = (long) Math.Sqrt(n);
 
                     Sieve(bound, out primes);
                     composite = false;
@@ -55,21 +75,21 @@ namespace Maurer
 
                     while (!done)
                     {
-                        double s = random.NextDouble();
+                        double s = _randomNumberGenerator.NextDouble();
 
                         r = Math.Pow(2, s - 1);
                         done = (k - r * k) > m;
                     }
                 }
 
-                BigInteger q = ProvablePrime((int)Math.Floor(r * k) + 1, seed);
+                BigInteger q = ProvablePrime((int) Math.Floor(r * k) + 1);
                 BigInteger t = 2;
                 BigInteger p = BigInteger.Pow(t, k - 1);
                 BigInteger Q = t * q;
                 BigInteger I = p / Q;
                 BigInteger S = p % Q;
                 bool success = false;
-                long B = (long)(c * k * k);
+                long B = (long) (c * k * k);
 
                 Sieve(B, out primes);
 
@@ -114,7 +134,7 @@ namespace Maurer
             return N;
         }
 
-        public void Sieve(long B0, out List<long> primes)
+        private void Sieve(long B0, out List<long> primes)
         {
             // Sieve of Eratosthenes
             // find all prime numbers

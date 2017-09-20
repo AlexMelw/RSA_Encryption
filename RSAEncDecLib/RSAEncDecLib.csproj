@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmHelpers\HCSRAlgorithm.cs" />
     <Compile Include="AlgorithmHelpers\IntegerHelper.cs" />
+    <Compile Include="AlgorithmHelpers\MaurerAlgorithm.cs" />
     <Compile Include="AlgorithmHelpers\PrimeExtensions.cs" />
     <Compile Include="AlgorithmHelpers\RsaHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
