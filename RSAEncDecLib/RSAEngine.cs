@@ -2,10 +2,11 @@
 {
     using System;
     using System.Net;
-    using System.Numerics;
     using EasySharp.NHelpers.Utils.Cryptography;
     using Maurer;
     using RSAEncDecLib.AlgorithmHelpers;
+    using ServiceWire.ZeroKnowledge;
+    using BigInteger = System.Numerics.BigInteger;
 
     public class RSAEngine
     {
@@ -27,11 +28,18 @@
 
         public static void GenerateKyes(int keySizeBits, out BigInteger n, out BigInteger e, out BigInteger d)
         {
-            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
-            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
+            //BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
+            //BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
 
             //BigInteger p = 2;
             //BigInteger q = 7;
+
+            byte[] pByteArray = new ZkProtocol().CryptRand(keySizeBits);
+            BigInteger p = new BigInteger(pByteArray);
+
+            byte[] qByteArray = new ZkProtocol().CryptRand(keySizeBits);
+            BigInteger q = new BigInteger(qByteArray);
+
 
             n = ComputeModulus(p, q);
 
@@ -53,7 +61,7 @@
 
         private static BigInteger GenerateDecryptionExponent(BigInteger encryptionExp, BigInteger totient)
         {
-            int k = 2;
+            int k = 1;
             BigInteger d = BigInteger.Multiply(k, totient) - 1;
 
             return d;
