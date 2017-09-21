@@ -7,11 +7,11 @@ namespace RSAEncDecLib.AlgorithmHelpers
 
     public static class PrimeExtensions
     {
-        //// Random generator (thread safe)
-        //private static ThreadLocal<Random> s_Gen = new ThreadLocal<Random>(() => new Random());
+        // Random generator (thread safe)
+        private static readonly ThreadLocal<Random> SGen = new ThreadLocal<Random>(() => new Random());
 
-        //// Random generator (thread safe)
-        //private static Random Gen => s_Gen.Value;
+        // Random generator (thread safe)
+        private static Random Gen => SGen.Value;
 
         public static bool IsProbablyPrime(this BigInteger value, int witnesses = 10)
         {
@@ -31,12 +31,12 @@ namespace RSAEncDecLib.AlgorithmHelpers
             }
 
             byte[] bytes = new byte[value.ToByteArray().LongLength];
-            BigInteger a;
 
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 for (int i = 0; i < witnesses; i++)
                 {
+                    BigInteger a;
                     do
                     {
                         rng.GetBytes(bytes);

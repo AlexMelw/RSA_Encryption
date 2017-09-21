@@ -1,53 +1,22 @@
 ﻿namespace RSAcli
 {
     using System;
-    using System.Net;
-    using EasySharp.NHelpers.Utils.Cryptography;
+    using System.Numerics;
+    using Interfaces;
     using Maurer;
     using RSAEncDecLib.AlgorithmHelpers;
-    using ServiceWire.ZeroKnowledge;
-    using BigInteger = System.Numerics.BigInteger;
 
-    public class RSAEngine
+    public class RSAEngine : IEncryptor, IDecryptor, IKeygen
     {
-        private readonly int _keySize;
         private byte[] _encryptionExp;
         private byte[] _modulus;
         private byte[] _decryptionExp;
 
-        #region CONSTRUCTORS
-
-        public RSAEngine(int keySize)
-        {
-            _keySize = keySize;
-        }
-
-        public RSAEngine() { }
-
-        #endregion
-
-        public static void GenerateKyes(int keySizeBits, out BigInteger n, out BigInteger e, out BigInteger d)
-        {
-            //BigInteger p = 2;
-            //BigInteger q = 7;
-
-            //BigInteger p = RsaHelper.GetRandomPrimeWithinRange(2000000, 4000000);
-            //BigInteger q = RsaHelper.GetRandomPrimeWithinRange(2000000, 4000000);
-
-            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
-            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
-
-            n = ComputeModulus(p, q);
-            BigInteger totient = ComputeTotient(p, q);
-
-            e = GenerateEncryptionExponent(n, totient);
-            d = GenerateDecryptionExponent(e, totient);
-        }
-
-        private static BigInteger GenerateEncryptionExponent(BigInteger modulus, BigInteger totient)
+        private static BigInteger GenerateEncryptionExponent(BigInteger totient)
         {
             BigInteger e;
-            do {
+            do
+            {
                 e = BigIntegerHelper.NextBigInteger(2, totient);
             } while (BigInteger.GreatestCommonDivisor(e, totient) != 1);
 
@@ -56,22 +25,24 @@
 
         private static BigInteger GenerateDecryptionExponent(BigInteger encryptionExp, BigInteger totient)
         {
-            BigInteger[] result = new BigInteger[3];
+            (BigInteger x, BigInteger y) = Extended_GCD(totient, encryptionExp);
 
-            result = Extended_GCD(totient, encryptionExp);
+            y = NormalizeY(totient, y);
 
-            if (result[2] < 0)
-            {
-                result[2] = result[2] + totient;
-            }
-
-            return result[2];
+            return y;
         }
 
-        private static BigInteger[] Extended_GCD(BigInteger A, BigInteger B)
+        private static BigInteger NormalizeY(BigInteger totient, BigInteger y)
         {
-            BigInteger[] result = new BigInteger[3];
+            if (y < 0)
+            {
+                y = y + totient;
+            }
+            return y;
+        }
 
+        private static (BigInteger, BigInteger) Extended_GCD(BigInteger A, BigInteger B)
+        {
             bool reverse = false;
 
             if (A < B) //if A less than B, switch them
@@ -79,8 +50,6 @@
                 Swap(ref A, ref B);
                 reverse = true;
             }
-
-            //log("Extended GCD");
 
             BigInteger r = B;
             BigInteger q = 0;
@@ -93,10 +62,6 @@
 
             BigInteger x = 0;
             BigInteger y = 0;
-
-            //log(A + "\t" + " " + "\t" + x0 + "\t" + y0);
-
-            //log(B + "\t" + " " + "\t" + x1 + "\t" + y1);
 
             while (A % B != 0)
             {
@@ -114,23 +79,22 @@
 
                 A = B;
                 B = r;
-                //log(B + "\t" + r + "\t" + x + "\t" + y);
             }
 
-            result[0] = r;
+            var resultR = r;
 
-            if (reverse)
-            {
-                result[1] = y;
-                result[2] = x;
-            }
-            else
-            {
-                result[1] = x;
-                result[2] = y;
-            }
+            //if (reverse)
+            //{
+            //    resultX = y;
+            //    resultY = x;
+            //}
+            //else
+            //{
+            //    resultX = x;
+            //    resultY = y;
+            //}
 
-            return result;
+            return reverse ? (y, x) : (x, y);
 
             void Swap(ref BigInteger X, ref BigInteger Y)
             {
@@ -148,11 +112,6 @@
         private static BigInteger ComputeModulus(BigInteger p, BigInteger q)
         {
             return BigInteger.Multiply(p, q);
-        }
-
-        public static void GenerateKyes(out BigInteger privateKey, out BigInteger publicKey)
-        {
-            throw new NotImplementedException();
         }
 
         public byte[] EncryptData(byte[] plainText)
@@ -195,6 +154,31 @@
         public void ImportPublicKey(BigInteger encryptionExp, BigInteger modulus)
         {
             ImportPublicKey(encryptionExp.ToByteArray(), modulus.ToByteArray());
+        }
+
+        public void GenerateKyes(int keySizeBits, out BigInteger modulus,
+            out BigInteger encryptionExponent,
+            out BigInteger decryptionExponent)
+        {
+            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
+            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
+
+            modulus = ComputeModulus(p, q);
+            BigInteger totient = ComputeTotient(p, q);
+
+            encryptionExponent = GenerateEncryptionExponent(totient);
+            decryptionExponent = GenerateDecryptionExponent(encryptionExponent, totient);
+        }
+
+        public void GenerateKyes(int keySizeBits, out byte[] modulus,
+            out byte[] encryptionExponent, out byte[] decryptionExponent)
+        {
+            GenerateKyes(keySizeBits, out BigInteger modulusbBigInteger,
+                out BigInteger encryptionExponentbBigInteger, out BigInteger decryptionExponentbBigInteger);
+
+            modulus = modulusbBigInteger.ToByteArray();
+            encryptionExponent = encryptionExponentbBigInteger.ToByteArray();
+            decryptionExponent = decryptionExponentbBigInteger.ToByteArray();
         }
     }
 }

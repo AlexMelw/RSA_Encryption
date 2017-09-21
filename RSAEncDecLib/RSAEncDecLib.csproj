@@ -43,16 +43,15 @@
   <ItemGroup>
     <Compile Include="AlgorithmHelpers\BigIntegerHelper.cs" />
     <Compile Include="AlgorithmHelpers\HCSRAlgorithm.cs" />
-    <Compile Include="AlgorithmHelpers\IntegerHelper.cs" />
     <Compile Include="AlgorithmHelpers\MaurerAlgorithm.cs" />
     <Compile Include="AlgorithmHelpers\PrimeExtensions.cs" />
     <Compile Include="AlgorithmHelpers\RsaHelper.cs" />
-    <Compile Include="Dude.cs" />
+    <Compile Include="CryptoFactory.cs" />
+    <Compile Include="Interfaces\IDecryptor.cs" />
+    <Compile Include="Interfaces\IEncryptor.cs" />
+    <Compile Include="Interfaces\IKeygen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RSAEngine.cs" />
-    <Compile Include="ZeroKnowledge\ZkBigInt.cs" />
-    <Compile Include="ZeroKnowledge\ZkProtocol.cs" />
-    <Compile Include="ZeroKnowledge\ZkSafePrimes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EasySharp\NHelpers\NHelpers.csproj">

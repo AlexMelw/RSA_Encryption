@@ -72,7 +72,7 @@
         public void EncryptDataTest(BigInteger expected, byte[] m, BigInteger e, BigInteger n)
         {
             // Arrange
-            RSAEngine rsaEngine = new RSAEngine(4096);
+            RSAEngine rsaEngine = new RSAEngine();
             rsaEngine.ImportPublicKey(e, n);
 
             // Act               
@@ -89,7 +89,7 @@
         public void DecryptDataTest(BigInteger expected, byte[] m, BigInteger d, BigInteger n)
         {
             // Arrange
-            RSAEngine rsaEngine = new RSAEngine(4096);
+            RSAEngine rsaEngine = new RSAEngine();
             rsaEngine.ImportPrivateKey(d, n);
 
             // Act               

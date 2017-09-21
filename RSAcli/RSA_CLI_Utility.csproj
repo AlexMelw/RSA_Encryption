@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DecryptVerbOptions.cs" />
+    <Compile Include="EncryptVerbOptions.cs" />
+    <Compile Include="GenerateRSAKeyPair.cs" />
+    <Compile Include="IOutputableOption.cs" />
+    <Compile Include="Program.CodeBehind.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -50,6 +55,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommandLineParser">
+      <Version>2.1.1-beta</Version>
+    </PackageReference>
     <PackageReference Include="System.ValueTuple">
       <Version>4.4.0</Version>
     </PackageReference>
