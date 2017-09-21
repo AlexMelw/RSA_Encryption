@@ -11,13 +11,11 @@ namespace ServiceWire.ZeroKnowledge
     /// </summary>
     public class ZkProtocol
     {
-        private readonly SHA256 _sha;
         private readonly Random _random;
         private readonly BigInteger _n;
 
         public ZkProtocol()
         {
-            _sha = SHA256.Create();
             _random = new Random(DateTime.Now.Millisecond);
             _n = new BigInteger(ZkSafePrimes.N4);
         }

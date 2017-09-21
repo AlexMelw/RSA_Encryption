@@ -3,15 +3,13 @@ using System.Numerics;
 
 namespace Maurer
 {
-    using EasySharp.NHelpers.Utils.Cryptography;
-
     class HCSRAlgorithm
     {
-        private readonly Random _randomNumberGenerator;
+        private Random random;
 
         public HCSRAlgorithm(int seed)
         {
-            _randomNumberGenerator = new Random(seed);
+            random = new Random(seed);
         }
 
         public bool Composite(BigInteger n, int t)
@@ -66,7 +64,7 @@ namespace Maurer
             return false;
         }
 
-        private int Jacobi(BigInteger a, BigInteger n)
+        public int Jacobi(BigInteger a, BigInteger n)
         {
             if (a == 0)
                 return 0;
@@ -114,7 +112,8 @@ namespace Maurer
             return s * Jacobi(n1, a1);
         }
 
-        public BigInteger RandomRange(BigInteger lower, BigInteger upper)
+        public BigInteger RandomRange(
+           BigInteger lower, BigInteger upper)
         {
             if (lower <= long.MaxValue && upper <= long.MaxValue && lower < upper)
             {
@@ -122,7 +121,7 @@ namespace Maurer
 
                 while (true)
                 {
-                    r = lower + (long) (((long) upper - (long) lower) * _randomNumberGenerator.NextDouble());
+                    r = lower + (long)(((long)upper - (long)lower) * random.NextDouble());
 
                     if (r >= lower && r <= upper)
                         return r;
@@ -135,7 +134,7 @@ namespace Maurer
 
             while (true)
             {
-                _randomNumberGenerator.NextBytes(buffer);
+                random.NextBytes(buffer);
 
                 BigInteger r = new BigInteger(buffer) + lower;
 
@@ -144,8 +143,9 @@ namespace Maurer
             }
         }
 
-        public BigInteger SquareRootModPrime(BigInteger a, BigInteger p)
-            // returns square root of a modulo p if it exists 0 otherwise
+        public BigInteger SquareRootModPrime(
+           BigInteger a, BigInteger p)
+        // returns square root of a modulo p if it exists 0 otherwise
         {
             long e = 0, r, s;
             BigInteger b = 0, bp = 0, q = p - 1, m = 0, n = 0;
@@ -188,14 +188,14 @@ namespace Maurer
 
                 do
                 {
-                    bp = BigInteger.ModPow(b, (long) Math.Pow(2, s), p);
+                    bp = BigInteger.ModPow(b, (long)Math.Pow(2, s), p);
                     s++;
                 } while (bp != 1 && bp != p1 && s < r);
 
                 if (s == r)
                     return 0;
 
-                t = BigInteger.ModPow(y, (long) Math.Pow(2, r - s - 1), p);
+                t = BigInteger.ModPow(y, (long)Math.Pow(2, r - s - 1), p);
                 y = (t * t) % p;
                 x = (x * t) % p;
                 b = (b * y) % p;

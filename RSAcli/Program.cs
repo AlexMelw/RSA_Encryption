@@ -19,7 +19,7 @@
             //Console.Out.WriteLine("q = {0}", q);
             //Console.Out.WriteLine("q = {0}", q.ToByteArray().LongLength);
 
-            RSAEngine.GenerateKyes(64, out BigInteger n, out BigInteger e, out BigInteger d);
+            RSAEngine.GenerateKyes(4096, out BigInteger n, out BigInteger e, out BigInteger d);
 
             //n = BigInteger.Parse(
             //    "0e8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec99839589f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f",

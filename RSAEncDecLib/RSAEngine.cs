@@ -28,22 +28,18 @@
 
         public static void GenerateKyes(int keySizeBits, out BigInteger n, out BigInteger e, out BigInteger d)
         {
-            //BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
-            //BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits);
-
             //BigInteger p = 2;
             //BigInteger q = 7;
 
-            byte[] pByteArray = new ZkProtocol().CryptRand(keySizeBits);
-            BigInteger p = new BigInteger(pByteArray);
+            //BigInteger p = RsaHelper.GetRandomPrimeWithinRange(2000000, 4000000);
+            //BigInteger q = RsaHelper.GetRandomPrimeWithinRange(2000000, 4000000);
 
-            byte[] qByteArray = new ZkProtocol().CryptRand(keySizeBits);
-            BigInteger q = new BigInteger(qByteArray);
-
+            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
+            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
 
             n = ComputeModulus(p, q);
-
             BigInteger totient = ComputeTotient(p, q);
+
             e = GenerateEncryptionExponent(n, totient);
             d = GenerateDecryptionExponent(e, totient);
         }
@@ -51,8 +47,7 @@
         private static BigInteger GenerateEncryptionExponent(BigInteger modulus, BigInteger totient)
         {
             BigInteger e;
-            do
-            {
+            do {
                 e = BigIntegerHelper.NextBigInteger(2, totient);
             } while (BigInteger.GreatestCommonDivisor(e, totient) != 1);
 
@@ -61,10 +56,88 @@
 
         private static BigInteger GenerateDecryptionExponent(BigInteger encryptionExp, BigInteger totient)
         {
-            int k = 1;
-            BigInteger d = BigInteger.Multiply(k, totient) - 1;
+            BigInteger[] result = new BigInteger[3];
 
-            return d;
+            result = Extended_GCD(totient, encryptionExp);
+
+            if (result[2] < 0)
+            {
+                result[2] = result[2] + totient;
+            }
+
+            return result[2];
+        }
+
+        private static BigInteger[] Extended_GCD(BigInteger A, BigInteger B)
+        {
+            BigInteger[] result = new BigInteger[3];
+
+            bool reverse = false;
+
+            if (A < B) //if A less than B, switch them
+            {
+                Swap(ref A, ref B);
+                reverse = true;
+            }
+
+            //log("Extended GCD");
+
+            BigInteger r = B;
+            BigInteger q = 0;
+
+            BigInteger x0 = 1;
+            BigInteger y0 = 0;
+
+            BigInteger x1 = 0;
+            BigInteger y1 = 1;
+
+            BigInteger x = 0;
+            BigInteger y = 0;
+
+            //log(A + "\t" + " " + "\t" + x0 + "\t" + y0);
+
+            //log(B + "\t" + " " + "\t" + x1 + "\t" + y1);
+
+            while (A % B != 0)
+            {
+                r = A % B;
+                q = A / B;
+
+                x = x0 - q * x1;
+                y = y0 - q * y1;
+
+                x0 = x1;
+                y0 = y1;
+
+                x1 = x;
+                y1 = y;
+
+                A = B;
+                B = r;
+                //log(B + "\t" + r + "\t" + x + "\t" + y);
+            }
+
+            result[0] = r;
+
+            if (reverse)
+            {
+                result[1] = y;
+                result[2] = x;
+            }
+            else
+            {
+                result[1] = x;
+                result[2] = y;
+            }
+
+            return result;
+
+            void Swap(ref BigInteger X, ref BigInteger Y)
+            {
+                var temp = X;
+                X = Y;
+                Y = temp;
+            }
         }
 
         private static BigInteger ComputeTotient(BigInteger p, BigInteger q)

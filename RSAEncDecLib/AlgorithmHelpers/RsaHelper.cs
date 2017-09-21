@@ -6,10 +6,10 @@
 
     public class RsaHelper
     {
-        public static (int p, int q) GetRandomPrimesWithinRange(int start, int end)
+        public static (long p, long q) GetRandomPrimesWithinRange(long start, long end)
         {
-            int p = 0;
-            int q = 0;
+            long p = 0;
+            long q = 0;
 
             while (p == q)
             {
@@ -20,19 +20,19 @@
             return (p, q);
         }
 
-        public static int GetRandomPrimeWithinRange(int start, int end)
+        public static long GetRandomPrimeWithinRange(long start, long end)
         {
             if (!ExistsPrimeWithinRange(start, end))
                 throw new ArgumentException($"There is no prime numbers for the given range: {start}..{end}");
 
 
-            int value = RNGUtil.Next(start, end);
+            long value = RNGUtil.Next(start, end);
 
-            int oscillator = value;
+            long oscillator = value;
             bool flipFlop = true;
-            int seedOffset = 1;
+            long seedOffset = 1;
 
-            while (IsNotPrime(oscillator) || oscillator.NotInRange(start, end))
+            while (IsNotPrime(oscillator) || !(oscillator >= start && oscillator <= end))
             {
                 flipFlop = !flipFlop; // "false" for the first time
                 oscillator = value + (flipFlop ? -seedOffset : +seedOffset);
@@ -42,9 +42,9 @@
             return oscillator;
         }
 
-        public static bool ExistsPrimeWithinRange(int start, int end)
+        public static bool ExistsPrimeWithinRange(long start, long end)
         {
-            for (int i = start; i < end; i++)
+            for (long i = start; i < end; i++)
             {
                 if (IsPrime(i))
                 {
@@ -54,18 +54,18 @@
             return false;
         }
 
-        public static bool IsNotPrime(int number) => !IsPrime(number);
+        public static bool IsNotPrime(long number) => !IsPrime(number);
 
-        public static bool IsPrime(int number)
+        public static bool IsPrime(long number)
         {
-            if ((number & 1) == 0)
+            if (number %2 == 0)
             {
                 return number == 2;
             }
 
-            int limit = (int) Math.Sqrt(number);
+            long limit = (long) Math.Sqrt(number);
 
-            for (int i = 3; i <= limit; i += 2)
+            for (long i = 3; i <= limit; i += 2)
             {
                 if (number % i == 0)
                 {
