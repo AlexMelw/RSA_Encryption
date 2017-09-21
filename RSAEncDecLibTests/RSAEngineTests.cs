@@ -3,6 +3,7 @@
     using System.Globalization;
     using System.Numerics;
     using NUnit.Framework;
+    using RSAEncDecLib;
 
     [TestFixture]
     public class RSAEngineTests

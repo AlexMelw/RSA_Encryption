@@ -4,8 +4,8 @@
     using System.IO;
     using System.Numerics;
     using EasySharp.NHelpers.CustomExMethods;
-    using Interfaces;
     using RSAEncDecLib;
+    using RSAEncDecLib.Interfaces;
 
     static partial class Program
     {
@@ -55,11 +55,20 @@
                 out byte[] encryptionExponent,
                 out byte[] decryptionExponent);
 
-            string privateKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Private);
-            string publicKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Public);
+            string timeStamp = CreateTimeStamp();
+
+            string privateKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Private, timeStamp);
+            string publicKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Public, timeStamp);
 
             PersistKeyToFile(publicKeyFileName, encryptionExponent, modulus);
             PersistKeyToFile(privateKeyFileName, decryptionExponent, modulus);
+        }
+
+        private static string CreateTimeStamp()
+        {
+            DateTime now = DateTime.Now;
+            string timeStamp = $"{now.Year}-{now.Month}-{now.Day}_{now.Hour}{now.Minute}{now.Second}{now.Millisecond}";
+            return timeStamp;
         }
 
         private static void PersistKeyToFile(string keyFileName, byte[] exponent, byte[] modulus)
@@ -95,10 +104,9 @@
                    $"{fileExtension}";
         }
 
-        private static string AggregateFileNameConstituentParts(IKeyParams keyParams, KeyType keyType)
+        private static string AggregateFileNameConstituentParts(IKeyParams keyParams, KeyType keyType, string timeStamp)
         {
-            DateTime now = DateTime.Now;
-            string timeStamp = $"{now.Year}-{now.Month}-{now.Day}_{now.Hour}{now.Minute}{now.Second}{now.Millisecond}";
+
             string extension = keyType.ToString().ToLower();
 
             var finalFileName = string.IsNullOrWhiteSpace(keyParams.OutputFileNamePrefix)

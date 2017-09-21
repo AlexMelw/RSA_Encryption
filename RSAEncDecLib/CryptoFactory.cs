@@ -1,7 +1,6 @@
 ﻿namespace RSAEncDecLib
 {
-    using RSAcli;
-    using RSAcli.Interfaces;
+    using Interfaces;
 
     public static class CryptoFactory
     {

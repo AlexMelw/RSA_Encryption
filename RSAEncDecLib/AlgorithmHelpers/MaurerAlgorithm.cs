@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-
-namespace Maurer
+﻿namespace RSAEncDecLib.AlgorithmHelpers
 {
-    using System.IO;
+    using System;
+    using System.Collections.Generic;
+    using System.Numerics;
     using EasySharp.NHelpers.Utils.Cryptography;
 
     class MaurerAlgorithm

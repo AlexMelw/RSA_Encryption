@@ -1,10 +1,9 @@
-﻿namespace RSAcli
+﻿namespace RSAEncDecLib
 {
     using System;
     using System.Numerics;
+    using AlgorithmHelpers;
     using Interfaces;
-    using Maurer;
-    using RSAEncDecLib.AlgorithmHelpers;
 
     public class RSAEngine : IEncryptor, IDecryptor, IKeygen
     {
@@ -12,11 +11,29 @@
         private byte[] _modulus;
         private byte[] _decryptionExp;
 
+        public void GenerateKyes(int keySizeBits, out BigInteger modulus,
+            out BigInteger encryptionExponent,
+            out BigInteger decryptionExponent)
+        {
+            Console.Out.WriteLine("Key generation status: pass 1 [1/4]");
+            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
+            Console.Out.WriteLine("Key generation status: pass 2 [2/4]");
+            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
+
+            modulus = ComputeModulus(p, q);
+            BigInteger totient = ComputeTotient(p, q);
+
+            Console.Out.WriteLine("Key generation status: pass 3 [3/4]");
+            encryptionExponent = GenerateEncryptionExponent(totient);
+            Console.Out.WriteLine("Key generation status: pass 4 [4/4]");
+            decryptionExponent = GenerateDecryptionExponent(encryptionExponent, totient);
+            Console.Out.WriteLine("Key generation status: operation completed.");
+        }
+
         private static BigInteger GenerateEncryptionExponent(BigInteger totient)
         {
             BigInteger e;
-            do
-            {
+            do {
                 e = BigIntegerHelper.NextBigInteger(2, totient);
             } while (BigInteger.GreatestCommonDivisor(e, totient) != 1);
 
@@ -83,17 +100,6 @@
 
             var resultR = r;
 
-            //if (reverse)
-            //{
-            //    resultX = y;
-            //    resultY = x;
-            //}
-            //else
-            //{
-            //    resultX = x;
-            //    resultY = y;
-            //}
-
             return reverse ? (y, x) : (x, y);
 
             void Swap(ref BigInteger X, ref BigInteger Y)
@@ -154,20 +160,6 @@
         public void ImportPublicKey(BigInteger encryptionExp, BigInteger modulus)
         {
             ImportPublicKey(encryptionExp.ToByteArray(), modulus.ToByteArray());
-        }
-
-        public void GenerateKyes(int keySizeBits, out BigInteger modulus,
-            out BigInteger encryptionExponent,
-            out BigInteger decryptionExponent)
-        {
-            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
-            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
-
-            modulus = ComputeModulus(p, q);
-            BigInteger totient = ComputeTotient(p, q);
-
-            encryptionExponent = GenerateEncryptionExponent(totient);
-            decryptionExponent = GenerateDecryptionExponent(encryptionExponent, totient);
         }
 
         public void GenerateKyes(int keySizeBits, out byte[] modulus,

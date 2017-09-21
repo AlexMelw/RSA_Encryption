@@ -5,6 +5,7 @@
     using System.Numerics;
     using System.Text;
     using CommandLine;
+    using RSAEncDecLib;
     using RSAEncDecLib.AlgorithmHelpers;
 
     static partial class Program

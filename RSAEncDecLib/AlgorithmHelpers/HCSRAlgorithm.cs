@@ -1,9 +1,7 @@
-﻿using System;
-using System.Numerics;
-
-namespace Maurer
+﻿namespace RSAEncDecLib.AlgorithmHelpers
 {
-    using EasySharp.NHelpers.Utils.Cryptography;
+    using System;
+    using System.Numerics;
 
     class HCSRAlgorithm
     {

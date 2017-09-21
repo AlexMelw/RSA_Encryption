@@ -1,4 +1,4 @@
-﻿namespace RSAcli.Interfaces
+﻿namespace RSAEncDecLib.Interfaces
 {
     using System.Numerics;
 
