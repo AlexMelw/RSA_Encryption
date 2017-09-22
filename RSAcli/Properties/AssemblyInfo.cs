@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("RSAcli")]
-[assembly: AssemblyCopyright("Copyright (C) 2017")]
+[assembly: AssemblyCopyright("Copyright (C) 2017. Developed by BARBARII Veaceslav")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -2,8 +2,10 @@
 {
     using System.Globalization;
     using System.Numerics;
+    using System.Text;
     using NUnit.Framework;
     using RSAEncDecLib;
+    using RSAEncDecLib.Interfaces;
 
     [TestFixture]
     public class RSAEngineTests
@@ -70,7 +72,9 @@
 
         [Test]
         [TestCaseSource(nameof(EncryptionDataSourceObjects))]
-        public void EncryptDataTest(BigInteger expected, byte[] m, BigInteger e, BigInteger n)
+        public void
+            GivenDataAndEncryptionExpAndModulus_WhenEncryptingWithPreviouslyGeneratedKeys_ThanEqualsToExpectedResult(
+                BigInteger expected, byte[] m, BigInteger e, BigInteger n)
         {
             // Arrange
             RSAEngine rsaEngine = new RSAEngine();
@@ -87,7 +91,9 @@
 
         [Test]
         [TestCaseSource(nameof(DecryptionDataSourceObjects))]
-        public void DecryptDataTest(BigInteger expected, byte[] m, BigInteger d, BigInteger n)
+        public void
+            GivenDataAndDecryptionExpAndModulus_WhenDecryptingWithPreviouslyGeneratedKeys_ThanEqualsToExpectedResult(
+                BigInteger expected, byte[] m, BigInteger d, BigInteger n)
         {
             // Arrange
             RSAEngine rsaEngine = new RSAEngine();
@@ -100,6 +106,35 @@
             // Assert
             Assert.That(new BigInteger(decryptedRsaParams), Is.EqualTo(expected));
             //Assert.That(new BigInteger(decryptedRsaParams), Is.EqualTo(new BigInteger(2)));
+        }
+
+        [TestCase(1024)]
+        [TestCase(2048)]
+        public void GivenGeneratedKeysWithinCurrentSession_WhenEncryptAndDecryptData_ThenOriginalAndResultAreEqual(int keyBitsSize)
+        {
+            // Arrange
+            string original = "Sunt din Chișinău. Знаю русский язык. " +
+                              "Utilizez diacriticele: â,î,ă,ț,ș,Â,Î,Ă,Ț,Ș. " +
+                              "Test din 22.09.2017";
+
+            IKeygen keygen = CryptoFactory.CreateKeygen();
+            keygen.GenerateKyes(keyBitsSize, out byte[] modulus, out byte[] encryptionExponent, out byte[] decryptionExponent);
+
+            // Act
+            IEncryptor encryptor = CryptoFactory.CreateEncryptor();
+            encryptor.ImportPublicKey(encryptionExponent, modulus);
+            byte[] encryptedData = encryptor.EncryptData(Encoding.UTF8.GetBytes(original));
+
+
+            IDecryptor decryptor = CryptoFactory.CreateDecryptor();
+            decryptor.ImportPrivateKey(decryptionExponent, modulus);
+            byte[] decryptedData = decryptor.DecryptData(encryptedData);
+
+            // Assert
+            string actual = Encoding.UTF8.GetString(decryptedData);
+
+            Assert.That(Encoding.UTF8.GetBytes(actual).Length, Is.EqualTo(Encoding.UTF8.GetBytes(original).Length));
+            Assert.That(actual, Is.EqualTo(original));
         }
     }
 }

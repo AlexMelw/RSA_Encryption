@@ -15,7 +15,7 @@
         public int KeyBitLength { get; set; }
 
         [Option('o', "output",
-            HelpText = "The Prefix of Output Files Name. Example of name generated files: " +
+            HelpText = "The Prefix of Output Files' Names. Example of generated filenames: " +
                        "{Prefix}-{4096}bits.public {Prefix}-{4096}bits.private")]
         public string OutputFileNamePrefix { get; set; }
 
