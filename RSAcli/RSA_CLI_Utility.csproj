@@ -63,10 +63,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\EasySharp\NHelpers\NHelpers.csproj">
-      <Project>{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}</Project>
-      <Name>NHelpers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RSAEncDecLib\RSAEncDecLib.csproj">
       <Project>{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}</Project>
       <Name>RSAEncDecLib</Name>

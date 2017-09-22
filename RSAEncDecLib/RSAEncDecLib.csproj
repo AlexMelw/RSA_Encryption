@@ -54,15 +54,15 @@
     <Compile Include="RSAEngine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.4.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\EasySharp\NHelpers\NHelpers.csproj">
       <Project>{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}</Project>
       <Name>NHelpers</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.4.0</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

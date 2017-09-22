@@ -2,8 +2,6 @@
 {
     using System;
     using System.IO;
-    using System.Numerics;
-    using EasySharp.NHelpers.CustomExMethods;
     using RSAEncDecLib;
     using RSAEncDecLib.Interfaces;
 
@@ -12,10 +10,14 @@
         private static void ProcessDecryptCommand(DecryptVerbOptions options)
         {
             byte[] inputByteArray = File.ReadAllBytes(options.InputFilePath);
-            StreamReader keyStreamReader = File.OpenText(options.KeyPath);
+            byte[] decryptionExponent;
+            byte[] modulus;
 
-            byte[] decryptionExponent = keyStreamReader.ReadLine().ToDecodedStringFromBase64().ToUtf8EncodedByteArray();
-            byte[] modulus = keyStreamReader.ReadLine().ToDecodedStringFromBase64().ToUtf8EncodedByteArray();
+            using (StreamReader keyStreamReader = File.OpenText(options.KeyPath))
+            {
+                decryptionExponent = Convert.FromBase64String(keyStreamReader.ReadLine());
+                modulus = Convert.FromBase64String(keyStreamReader.ReadLine());
+            }
 
             IDecryptor rsaDecryptor = CryptoFactory.CreateDecryptor();
             rsaDecryptor.ImportPrivateKey(decryptionExponent, modulus);
@@ -31,10 +33,14 @@
         private static void ProcessEncryptCommand(EncryptVerbOptions options)
         {
             byte[] inputByteArray = File.ReadAllBytes(options.InputFilePath);
-            StreamReader keyStreamReader = File.OpenText(options.KeyPath);
+            byte[] encryptionExponent;
+            byte[] modulus;
 
-            byte[] encryptionExponent = keyStreamReader.ReadLine().ToDecodedStringFromBase64().ToUtf8EncodedByteArray();
-            byte[] modulus = keyStreamReader.ReadLine().ToDecodedStringFromBase64().ToUtf8EncodedByteArray();
+            using (StreamReader keyStreamReader = File.OpenText(options.KeyPath))
+            {
+                encryptionExponent = Convert.FromBase64String(keyStreamReader.ReadLine());
+                modulus = Convert.FromBase64String(keyStreamReader.ReadLine());
+            }
 
             IEncryptor rsaEncryptor = CryptoFactory.CreateEncryptor();
             rsaEncryptor.ImportPublicKey(encryptionExponent, modulus);
@@ -106,7 +112,6 @@
 
         private static string AggregateFileNameConstituentParts(IKeyParams keyParams, KeyType keyType, string timeStamp)
         {
-
             string extension = keyType.ToString().ToLower();
 
             var finalFileName = string.IsNullOrWhiteSpace(keyParams.OutputFileNamePrefix)

@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-
-namespace Maurer
+﻿namespace Maurer
 {
-    using System.IO;
+    using System;
+    using System.Collections.Generic;
+    using System.Numerics;
     using EasySharp.NHelpers.Utils.Cryptography;
 
     class MaurerAlgorithm
     {
         private Random _randomNumberGenerator;
         private int _seed;
-
-        private MaurerAlgorithm(int seed)
-        {
-            _seed = seed;
-            _randomNumberGenerator = new Random(seed);
-        }
 
         public static MaurerAlgorithm Instance
         {
@@ -25,6 +17,16 @@ namespace Maurer
                 return new MaurerAlgorithm(seed);
             }
         }
+
+        #region CONSTRUCTORS
+
+        private MaurerAlgorithm(int seed)
+        {
+            _seed = seed;
+            _randomNumberGenerator = new Random(seed);
+        }
+
+        #endregion
 
         public double Log2(BigInteger n)
         {
@@ -78,7 +80,7 @@ namespace Maurer
                         double s = _randomNumberGenerator.NextDouble();
 
                         r = Math.Pow(2, s - 1);
-                        done = (k - r * k) > m;
+                        done = k - r * k > m;
                     }
                 }
 
