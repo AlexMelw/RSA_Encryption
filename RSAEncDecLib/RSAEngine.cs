@@ -1,6 +1,7 @@
 ﻿namespace RSAEncDecLib
 {
     using System;
+    using System.Diagnostics;
     using System.Numerics;
     using AlgorithmHelpers;
     using Interfaces;
@@ -15,6 +16,7 @@
             out BigInteger encryptionExponent,
             out BigInteger decryptionExponent)
         {
+            Stopwatch overallStopwatch = Stopwatch.StartNew();
             Console.Out.WriteLine("Key generation status: pass 1 [1/4]");
             BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
             Console.Out.WriteLine("Key generation status: pass 2 [2/4]");
@@ -27,7 +29,11 @@
             encryptionExponent = GenerateEncryptionExponent(totient);
             Console.Out.WriteLine("Key generation status: pass 4 [4/4]");
             decryptionExponent = GenerateDecryptionExponent(encryptionExponent, totient);
-            Console.Out.WriteLine("Key generation status: operation completed.");
+            TimeSpan elapsed = overallStopwatch.Elapsed;
+            Console.Out.WriteLine($"Key generation status: operation completed in " +
+                                  $"{elapsed.Minutes} min, " +
+                                  $"{elapsed.Seconds} sec, " +
+                                  $"{elapsed.Milliseconds} ms.");
         }
 
         private static BigInteger GenerateEncryptionExponent(BigInteger totient)
