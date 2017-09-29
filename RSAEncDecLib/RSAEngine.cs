@@ -19,16 +19,6 @@
         {
             Stopwatch overallStopwatch = Stopwatch.StartNew();
 
-            #region Previous Version
-
-            //Console.Out.WriteLine("Key generation status: pass 1 [1/4]");
-            //BigInteger p = await MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2).ConfigureAwait(false);
-
-            //Console.Out.WriteLine("Key generation status: pass 2 [2/4]");
-            //BigInteger q = await MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2).ConfigureAwait(false);
-
-            #endregion
-
             await Console.Out.WriteLineAsync("Key generation status: pass 1 [1/3]").ConfigureAwait(false);
             BigInteger[] primes = await Task.WhenAll(
                     MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2),
