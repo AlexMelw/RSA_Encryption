@@ -24,7 +24,7 @@
 
                 PersistKeyToFile(publicKeyFileName, encryptionExponent, modulus);
                 PersistKeyToFile(privateKeyFileName, decryptionExponent, modulus);
-            }));
+            })).Wait();
         }
 
         private static void ProcessEncryptCommand(EncryptVerbOptions options)
