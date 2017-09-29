@@ -10,7 +10,7 @@
     {
         private static void ProcessGenerateRSAKeyPairCommand(GenerateRSAKeyPair options)
         {
-            Task.Run(new Action(async () =>
+            Task.Run(async () =>
             {
                 IKeygen keygen = CryptoFactory.CreateKeygen();
 
@@ -24,7 +24,7 @@
 
                 PersistKeyToFile(publicKeyFileName, encryptionExponent, modulus);
                 PersistKeyToFile(privateKeyFileName, decryptionExponent, modulus);
-            })).Wait();
+            }).Wait();
         }
 
         private static void ProcessEncryptCommand(EncryptVerbOptions options)
