@@ -1,8 +1,10 @@
 ﻿namespace RSAcli.Tests
 {
+    using System;
     using System.Globalization;
     using System.Numerics;
     using System.Text;
+    using System.Threading.Tasks;
     using NUnit.Framework;
     using RSAEncDecLib;
     using RSAEncDecLib.Interfaces;
@@ -50,7 +52,9 @@
 
         [TestCase(1024)]
         [TestCase(2048)]
-        public void GivenGeneratedKeysWithinCurrentSession_WhenEncryptAndDecryptData_ThenOriginalAndResultAreEqual(int keyBitsSize)
+        [TestCase(4096)]
+        public void GivenGeneratedKeysWithinCurrentSession_WhenEncryptAndDecryptData_ThenOriginalAndResultAreEqual(
+            int keyBitsSize)
         {
             // Arrange
             string original = "Sunt din Chișinău. Знаю русский язык. " +
@@ -58,7 +62,11 @@
                               "Test din 22.09.2017";
 
             IKeygen keygen = CryptoFactory.CreateKeygen();
-            keygen.GenerateKyes(keyBitsSize, out byte[] modulus, out byte[] encryptionExponent, out byte[] decryptionExponent);
+
+            var result = Task.Run(async () => await keygen.GenerateKeysAsync(keyBitsSize).ConfigureAwait(true)).Result;
+
+            (byte[] modulus, byte[] encryptionExponent, byte[] decryptionExponent) =
+                (result.Item1, result.Item2, result.Item3);
 
             // Act
             IEncryptor encryptor = CryptoFactory.CreateEncryptor();

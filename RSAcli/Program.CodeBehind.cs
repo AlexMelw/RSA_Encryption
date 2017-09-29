@@ -2,32 +2,29 @@
 {
     using System;
     using System.IO;
+    using System.Threading.Tasks;
     using RSAEncDecLib;
     using RSAEncDecLib.Interfaces;
 
     static partial class Program
     {
-        private static void ProcessDecryptCommand(DecryptVerbOptions options)
+        private static void ProcessGenerateRSAKeyPairCommand(GenerateRSAKeyPair options)
         {
-            byte[] inputByteArray = File.ReadAllBytes(options.InputFilePath);
-            byte[] decryptionExponent;
-            byte[] modulus;
-
-            using (StreamReader keyStreamReader = File.OpenText(options.KeyPath))
+            Task.Run(new Action(async () =>
             {
-                decryptionExponent = Convert.FromBase64String(keyStreamReader.ReadLine());
-                modulus = Convert.FromBase64String(keyStreamReader.ReadLine());
-            }
+                IKeygen keygen = CryptoFactory.CreateKeygen();
 
-            IDecryptor rsaDecryptor = CryptoFactory.CreateDecryptor();
-            rsaDecryptor.ImportPrivateKey(decryptionExponent, modulus);
-            byte[] decryptedData = rsaDecryptor.DecryptData(inputByteArray);
+                (byte[] modulus, byte[] encryptionExponent, byte[] decryptionExponent) =
+                    await keygen.GenerateKeysAsync(options.KeyBitLength).ConfigureAwait(true);
 
-            GenerateOutputFileNameIfNotSet(options);
-            FileStream outputFileStream = File.OpenWrite(options.OutputFilePath);
-            outputFileStream.Write(decryptedData, 0, decryptedData.Length);
+                string timeStamp = CreateTimeStamp();
 
-            Console.Out.WriteLine($"The result file is: {Path.GetFileName(options.OutputFilePath)}");
+                string privateKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Private, timeStamp);
+                string publicKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Public, timeStamp);
+
+                PersistKeyToFile(publicKeyFileName, encryptionExponent, modulus);
+                PersistKeyToFile(privateKeyFileName, decryptionExponent, modulus);
+            }));
         }
 
         private static void ProcessEncryptCommand(EncryptVerbOptions options)
@@ -53,21 +50,27 @@
             Console.Out.WriteLine($"The result file is: {Path.GetFileName(options.OutputFilePath)}");
         }
 
-        private static void ProcessGenerateRSAKeyPairCommand(GenerateRSAKeyPair options)
+        private static void ProcessDecryptCommand(DecryptVerbOptions options)
         {
-            IKeygen keygen = CryptoFactory.CreateKeygen();
-            keygen.GenerateKyes(options.KeyBitLength,
-                out byte[] modulus,
-                out byte[] encryptionExponent,
-                out byte[] decryptionExponent);
+            byte[] inputByteArray = File.ReadAllBytes(options.InputFilePath);
+            byte[] decryptionExponent;
+            byte[] modulus;
 
-            string timeStamp = CreateTimeStamp();
+            using (StreamReader keyStreamReader = File.OpenText(options.KeyPath))
+            {
+                decryptionExponent = Convert.FromBase64String(keyStreamReader.ReadLine());
+                modulus = Convert.FromBase64String(keyStreamReader.ReadLine());
+            }
 
-            string privateKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Private, timeStamp);
-            string publicKeyFileName = AggregateFileNameConstituentParts(options, KeyType.Public, timeStamp);
+            IDecryptor rsaDecryptor = CryptoFactory.CreateDecryptor();
+            rsaDecryptor.ImportPrivateKey(decryptionExponent, modulus);
+            byte[] decryptedData = rsaDecryptor.DecryptData(inputByteArray);
 
-            PersistKeyToFile(publicKeyFileName, encryptionExponent, modulus);
-            PersistKeyToFile(privateKeyFileName, decryptionExponent, modulus);
+            GenerateOutputFileNameIfNotSet(options);
+            FileStream outputFileStream = File.OpenWrite(options.OutputFilePath);
+            outputFileStream.Write(decryptedData, 0, decryptedData.Length);
+
+            Console.Out.WriteLine($"The result file is: {Path.GetFileName(options.OutputFilePath)}");
         }
 
         private static string CreateTimeStamp()

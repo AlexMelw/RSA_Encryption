@@ -1,17 +1,10 @@
 ﻿namespace RSAEncDecLib.Interfaces
 {
-    using System.Numerics;
+    using System.Threading.Tasks;
 
     public interface IKeygen
     {
-        void GenerateKyes(int keySizeBits,
-            out BigInteger modulus,
-            out BigInteger encryptionExponent,
-            out BigInteger decryptionExponent);
-
-        void GenerateKyes(int keySizeBits,
-            out byte[] modulus,
-            out byte[] encryptionExponent,
-            out byte[] decryptionExponent);
+        Task<(byte[] modulus, byte[] encryptionExponent, byte[] decryptionExponent)>
+            GenerateKeysAsync(int keySizeBits);
     }
 }

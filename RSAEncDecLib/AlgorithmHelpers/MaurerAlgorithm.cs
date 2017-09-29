@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Numerics;
+    using System.Threading.Tasks;
     using EasySharp.NHelpers.Utils.Cryptography;
 
     class MaurerAlgorithm
@@ -29,7 +30,7 @@
             return BigInteger.Log10(n) / Math.Log10(2);
         }
 
-        public BigInteger ProvablePrime(int k)
+        public async Task<BigInteger> ProvablePrimeAsync(int k)
         {
             BigInteger N = 0;
             List<long> primes = null;
@@ -80,7 +81,7 @@
                     }
                 }
 
-                BigInteger q = ProvablePrime((int) Math.Floor(r * k) + 1);
+                BigInteger q = await ProvablePrimeAsync((int) Math.Floor(r * k) + 1).ConfigureAwait(false);
                 BigInteger t = 2;
                 BigInteger p = BigInteger.Pow(t, k - 1);
                 BigInteger Q = t * q;

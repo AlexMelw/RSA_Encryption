@@ -2,7 +2,9 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Linq;
     using System.Numerics;
+    using System.Threading.Tasks;
     using AlgorithmHelpers;
     using Interfaces;
 
@@ -12,34 +14,52 @@
         private byte[] _modulus;
         private byte[] _decryptionExp;
 
-        public void GenerateKyes(int keySizeBits, out BigInteger modulus,
-            out BigInteger encryptionExponent,
-            out BigInteger decryptionExponent)
+        public async Task<(byte[] modulus, byte[] encryptionExponent, byte[] decryptionExponent)>
+            GenerateKeysAsync(int keySizeBits)
         {
             Stopwatch overallStopwatch = Stopwatch.StartNew();
-            Console.Out.WriteLine("Key generation status: pass 1 [1/4]");
-            BigInteger p = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
-            Console.Out.WriteLine("Key generation status: pass 2 [2/4]");
-            BigInteger q = MaurerAlgorithm.Instance.ProvablePrime(keySizeBits / 2);
 
-            modulus = ComputeModulus(p, q);
+            #region Previous Version
+
+            //Console.Out.WriteLine("Key generation status: pass 1 [1/4]");
+            //BigInteger p = await MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2).ConfigureAwait(false);
+
+            //Console.Out.WriteLine("Key generation status: pass 2 [2/4]");
+            //BigInteger q = await MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2).ConfigureAwait(false);
+
+            #endregion
+
+            await Console.Out.WriteLineAsync("Key generation status: pass 1 [1/3]").ConfigureAwait(false);
+            BigInteger[] primes = await Task.WhenAll(
+                    MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2),
+                    MaurerAlgorithm.Instance.ProvablePrimeAsync(keySizeBits / 2))
+                .ConfigureAwait(false);
+
+            (BigInteger p, BigInteger q) = (primes.First(), primes.Last());
+
+            BigInteger modulus = ComputeModulus(p, q);
             BigInteger totient = ComputeTotient(p, q);
 
-            Console.Out.WriteLine("Key generation status: pass 3 [3/4]");
-            encryptionExponent = GenerateEncryptionExponent(totient);
-            Console.Out.WriteLine("Key generation status: pass 4 [4/4]");
-            decryptionExponent = GenerateDecryptionExponent(encryptionExponent, totient);
+            await Console.Out.WriteLineAsync("Key generation status: pass 2 [2/3]").ConfigureAwait(false);
+            BigInteger encryptionExponent = GenerateEncryptionExponent(totient);
+
+            await Console.Out.WriteLineAsync("Key generation status: pass 3 [3/3]").ConfigureAwait(false);
+            var decryptionExponent = GenerateDecryptionExponent(encryptionExponent, totient);
+
             TimeSpan elapsed = overallStopwatch.Elapsed;
-            Console.Out.WriteLine($"Key generation status: operation completed in " +
-                                  $"{elapsed.Minutes} min, " +
-                                  $"{elapsed.Seconds} sec, " +
-                                  $"{elapsed.Milliseconds} ms.");
+            await Console.Out.WriteLineAsync($"Key generation status: operation completed in " +
+                                             $"{elapsed.Minutes} min, " +
+                                             $"{elapsed.Seconds} sec, " +
+                                             $"{elapsed.Milliseconds} ms.").ConfigureAwait(false);
+
+            return (modulus.ToByteArray(), encryptionExponent.ToByteArray(), decryptionExponent.ToByteArray());
         }
 
         private static BigInteger GenerateEncryptionExponent(BigInteger totient)
         {
             BigInteger e;
-            do {
+            do
+            {
                 e = BigIntegerHelper.NextBigInteger(2, totient);
             } while (BigInteger.GreatestCommonDivisor(e, totient) != 1);
 
@@ -48,23 +68,16 @@
 
         private static BigInteger GenerateDecryptionExponent(BigInteger encryptionExp, BigInteger totient)
         {
-            (BigInteger x, BigInteger y) = Extended_GCD(totient, encryptionExp);
+            BigInteger decryptionExponent = Extended_GCD(totient, encryptionExp);
 
-            y = NormalizeY(totient, y);
+            decryptionExponent = NormalizeY(totient, decryptionExponent);
 
-            return y;
+            return decryptionExponent;
         }
 
-        private static BigInteger NormalizeY(BigInteger totient, BigInteger y)
-        {
-            if (y < 0)
-            {
-                y = y + totient;
-            }
-            return y;
-        }
+        private static BigInteger NormalizeY(BigInteger totient, BigInteger y) => y < 0 ? y + totient : y;
 
-        private static (BigInteger, BigInteger) Extended_GCD(BigInteger A, BigInteger B)
+        private static BigInteger Extended_GCD(BigInteger A, BigInteger B)
         {
             bool reverse = false;
 
@@ -106,7 +119,7 @@
 
             var resultR = r;
 
-            return reverse ? (y, x) : (x, y);
+            return reverse ? x : y;
 
             void Swap(ref BigInteger X, ref BigInteger Y)
             {
@@ -166,17 +179,6 @@
         public void ImportPublicKey(BigInteger encryptionExp, BigInteger modulus)
         {
             ImportPublicKey(encryptionExp.ToByteArray(), modulus.ToByteArray());
-        }
-
-        public void GenerateKyes(int keySizeBits, out byte[] modulus,
-            out byte[] encryptionExponent, out byte[] decryptionExponent)
-        {
-            GenerateKyes(keySizeBits, out BigInteger modulusbBigInteger,
-                out BigInteger encryptionExponentbBigInteger, out BigInteger decryptionExponentbBigInteger);
-
-            modulus = modulusbBigInteger.ToByteArray();
-            encryptionExponent = encryptionExponentbBigInteger.ToByteArray();
-            decryptionExponent = decryptionExponentbBigInteger.ToByteArray();
         }
     }
 }
