@@ -1,6 +1,5 @@
-﻿namespace RSAcli
+﻿namespace RSAcli.Options
 {
-    using System;
     using System.Collections.Generic;
     using CommandLine;
     using CommandLine.Text;

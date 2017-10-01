@@ -1,6 +1,7 @@
-﻿namespace RSAcli
+﻿namespace RSAcli.Facade
 {
     using CommandLine;
+    using Options;
 
     static partial class Program
     {

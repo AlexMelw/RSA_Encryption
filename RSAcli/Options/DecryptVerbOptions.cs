@@ -1,8 +1,9 @@
-﻿namespace RSAcli
+﻿namespace RSAcli.Options
 {
     using System.Collections.Generic;
     using CommandLine;
     using CommandLine.Text;
+    using Interfaces;
 
     [Verb("dec", HelpText = "Enforces file decryption with the specified key RSA private key.")]
     class DecryptVerbOptions : IOutputableOption

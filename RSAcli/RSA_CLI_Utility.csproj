@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,12 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DecryptVerbOptions.cs" />
-    <Compile Include="EncryptVerbOptions.cs" />
-    <Compile Include="GenerateRSAKeyPair.cs" />
-    <Compile Include="IOutputableOption.cs" />
-    <Compile Include="Program.CodeBehind.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Options\DecryptVerbOptions.cs" />
+    <Compile Include="Options\EncryptVerbOptions.cs" />
+    <Compile Include="Options\GenerateRSAKeyPair.cs" />
+    <Compile Include="Interfaces\IOutputableOption.cs" />
+    <Compile Include="Facade\Program.CodeBehind.cs" />
+    <Compile Include="Facade\Program.CommandProcessor.cs" />
+    <Compile Include="Facade\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +69,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EasySharp\NHelpers\NHelpers.csproj">
+      <Project>{CAC83CF1-E5D4-45F6-85CC-E0AD29B55A8E}</Project>
+      <Name>NHelpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RSAEncDecLib\RSAEncDecLib.csproj">
       <Project>{F5B68AF5-CCE6-49C9-A43E-500418C9D7BB}</Project>
       <Name>RSAEncDecLib</Name>
@@ -75,5 +81,6 @@
   <ItemGroup>
     <Content Include="Key.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

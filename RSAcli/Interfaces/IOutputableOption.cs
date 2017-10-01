@@ -1,4 +1,4 @@
-﻿namespace RSAcli
+﻿namespace RSAcli.Interfaces
 {
     interface IOutputableOption
     {
