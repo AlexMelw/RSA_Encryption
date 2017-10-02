@@ -1,6 +1,7 @@
 ﻿namespace RSAEncDecLib
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Numerics;
@@ -45,68 +46,109 @@
         {
             (BigInteger p, BigInteger q) = default((BigInteger, BigInteger));
 
+            int keySize = keySizeBits / 2;
             switch (Environment.ProcessorCount)
             {
                 case 16:
-                    (p, q) = await
-                        (await Task.WhenAny(
-                                GeneratePQPrimesAsync(keySizeBits, 1),
-                                GeneratePQPrimesAsync(keySizeBits, 2),
-                                GeneratePQPrimesAsync(keySizeBits, 3),
-                                GeneratePQPrimesAsync(keySizeBits, 4),
-                                GeneratePQPrimesAsync(keySizeBits, 5),
-                                GeneratePQPrimesAsync(keySizeBits, 6),
-                                GeneratePQPrimesAsync(keySizeBits, 7),
-                                GeneratePQPrimesAsync(keySizeBits, 8))
-                            .ConfigureAwait(false))
-                        .ConfigureAwait(false);
+                {
+                    List<Task<BigInteger>> primesTasks = new List<Task<BigInteger>>
+                    {
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize))
+                    };
+
+                    Task<BigInteger> firstTask = await Task.WhenAny(primesTasks).ConfigureAwait(false);
+
+                    primesTasks.Remove(firstTask);
+
+                    Task<BigInteger> secondTask = await Task.WhenAny(primesTasks).ConfigureAwait(false);
+
+                    p = await firstTask.ConfigureAwait(false);
+                    q = await secondTask.ConfigureAwait(false);
+
                     break;
+                }
 
                 case 8:
-                    (p, q) = await
-                        (await Task.WhenAny(
-                                GeneratePQPrimesAsync(keySizeBits, 1),
-                                GeneratePQPrimesAsync(keySizeBits, 2),
-                                GeneratePQPrimesAsync(keySizeBits, 3),
-                                GeneratePQPrimesAsync(keySizeBits, 4))
-                            .ConfigureAwait(false))
-                        .ConfigureAwait(false);
+                {
+                    List<Task<BigInteger>> primesTasks = new List<Task<BigInteger>>
+                    {
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize))
+                    };
+
+                    Task<BigInteger> firstTask = await Task.WhenAny(primesTasks).ConfigureAwait(false);
+
+                    primesTasks.Remove(firstTask);
+
+                    Task<BigInteger> secondTask = await Task.WhenAny(primesTasks).ConfigureAwait(false);
+
+                    p = await firstTask.ConfigureAwait(false);
+                    q = await secondTask.ConfigureAwait(false);
+
                     break;
+                }
+
 
                 case 4:
-                    (p, q) = await
-                        (await Task.WhenAny(
-                                GeneratePQPrimesAsync(keySizeBits, 1),
-                                GeneratePQPrimesAsync(keySizeBits, 2))
-                            .ConfigureAwait(false))
-                        .ConfigureAwait(false);
+                {
+                    List<Task<BigInteger>> primesTasks = new List<Task<BigInteger>>
+                    {
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize))
+                    };
+
+                    Task<BigInteger> firstTask = await Task.WhenAny(primesTasks).ConfigureAwait(false);
+
+                    primesTasks.Remove(firstTask);
+
+                    Task<BigInteger> secondTask = await Task.WhenAny(primesTasks).ConfigureAwait(false);
+
+                    p = await firstTask.ConfigureAwait(false);
+                    q = await secondTask.ConfigureAwait(false);
+
                     break;
+                }
+
 
                 case 2:
                 case 1:
                 default:
-                    (p, q) = await GeneratePQPrimesAsync(keySizeBits, 1)
+                {
+                    BigInteger[] primes = await Task.WhenAll(
+                            Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
+                            Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)))
                         .ConfigureAwait(false);
+
+                    (p, q) = (primes.First(), primes.Last());
+
                     break;
+                }
             }
+
             return (p, q);
-        }
-
-        private static async Task<(BigInteger p, BigInteger q)> GeneratePQPrimesAsync(int keySizeBits, int taskId)
-        {
-            (BigInteger, BigInteger) pq = await Task.Run(async () =>
-            {
-                int keySize = keySizeBits / 2;
-
-                BigInteger[] primes = await Task.WhenAll(
-                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)),
-                        Task.Run(() => MaurerAlgorithm.Instance.GetProvablePrimeAsync(keySize)))
-                    .ConfigureAwait(false);
-
-                return (primes.First(), primes.Last());
-            }).ConfigureAwait(false);
-
-            return pq;
         }
 
         private static BigInteger GenerateEncryptionExponent(BigInteger totient)

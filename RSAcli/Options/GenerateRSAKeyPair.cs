@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using CommandLine;
     using CommandLine.Text;
+    using Interfaces;
 
     [Verb("keygen", HelpText = "Generates RSA public/private key-pair of the specified bit-length.")]
     class GenerateRSAKeyPair : IKeyParams
@@ -28,11 +29,5 @@
                 });
             }
         }
-    }
-
-    internal interface IKeyParams
-    {
-        int KeyBitLength { get; set; }
-        string OutputFileNamePrefix { get; set; }
     }
 }
